@@ -13,11 +13,20 @@ const Cohort = require("./../models/Cohort.model");
 
 router.get("/", async (req, res, next) => {
   try {
-    const allCohorts = await Cohort.find();
+    console.log(req.query);
+    let search = {};
+
+    if (req.query.campus) {
+      search.campus = req.query.campus;
+    }
+    if (req.query.program) {
+      search.program = req.query.program;
+    }
+
+    const allCohorts = await Cohort.find(search);
     res.json(allCohorts);
   } catch (error) {
-    console.log(error);
-    res.send("Error during GET /api/cohorts");
+    next(error);
   }
 });
 
@@ -28,8 +37,7 @@ router.get("/:id", async (req, res, next) => {
     const allCohorts = await Cohort.findById(cohortId);
     res.json(allCohorts);
   } catch (error) {
-    console.log(error);
-    res.send("Error during GET /api/cohorts");
+    next(error);
   }
 });
 router.post("/", async (req, res, next) => {
@@ -47,18 +55,17 @@ router.post("/", async (req, res, next) => {
     totalHours: req.body.totalHours,
   })
     .then((createdCohort) => res.status(200).json(createdCohort))
-    .catch((err) =>
-      res.status(500).json({ message: "error creating a cohort" })
-    );
+    .catch((err) => {
+      next(err);
+    });
 });
+
 router.put("/:id", (req, res, next) => {
   Cohort.findByIdAndUpdate(req.params.id, req.body, { new: true })
     .then((updatedCohort) => {
       res.status(200).json(updatedCohort);
     })
-    .catch((err) =>
-      res.status(500).json({ message: "error editind a cohort" })
-    );
+    .catch((err) => next(err));
 });
 router.delete("/:id", (req, res, next) => {
   Cohort.findByIdAndDelete(req.params.id)
@@ -66,7 +73,7 @@ router.delete("/:id", (req, res, next) => {
       res.status(204).send();
     })
     .catch((error) => {
-      res.status(500).json({ message: "error deleting cohort" });
+      next(error);
     });
 });
 
