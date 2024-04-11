@@ -10,7 +10,6 @@ const Cohort = require("./../models/Cohort.model");
  * Request params: a part of the url which can change
  * Request query: search params or querystring
  */
-
 router.get("/", async (req, res, next) => {
   try {
     console.log(req.query);
@@ -40,6 +39,7 @@ router.get("/:id", async (req, res, next) => {
     next(error);
   }
 });
+
 router.post("/", async (req, res, next) => {
   Cohort.create({
     cohortSlug: req.body.cohortSlug,
@@ -67,6 +67,7 @@ router.put("/:id", (req, res, next) => {
     })
     .catch((err) => next(err));
 });
+
 router.delete("/:id", (req, res, next) => {
   Cohort.findByIdAndDelete(req.params.id)
     .then(() => {

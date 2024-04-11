@@ -1,5 +1,4 @@
 const router = require("express").Router();
-// const students = require("./../students.json")
 const Student = require("./../models/Student.model");
 const StudentStatic = require("./../students.json");
 /**
@@ -13,16 +12,6 @@ router.get("/", async (req, res, next) => {
     next(error);
   }
 });
-// router.get("/api/students", (req, res) => {
-//   try {
-//     res.status(200).json(StudentStatic);
-//   } catch (error) {
-//     console.error(error);
-//     res
-//       .status(500)
-//       .json({ message: "Error in the backend. Please check the console." });
-//   }
-// });
 
 router.get("/:id", async (req, res, next) => {
   try {
@@ -93,4 +82,5 @@ router.delete("/:id", (req, res, next) => {
       next(error);
     });
 });
+
 module.exports = router;
