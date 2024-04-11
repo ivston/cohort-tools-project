@@ -37,7 +37,7 @@ app.use(cookieParser());
 // const indexRoutes = require("./routes/index.routes")
 
 app.use("/", require("./routes/index.routes"));
-
+require("./error-handling")(app);
 // START SERVER
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

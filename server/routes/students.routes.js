@@ -7,11 +7,10 @@ const StudentStatic = require("./../students.json");
  */
 router.get("/", async (req, res, next) => {
   try {
-    const allStudents = await Student.find();
+    const allStudents = await Student.find().populate("cohort");
     res.json(allStudents);
   } catch (error) {
-    console.log(error);
-    res.send("Error in the backend, check the console");
+    next(error);
   }
 });
 // router.get("/api/students", (req, res) => {
@@ -31,10 +30,7 @@ router.get("/:id", async (req, res, next) => {
     const studentsInCohort = await Student.findById(studentId);
     res.status(200).json(studentsInCohort);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error in the backend. Please check the console." });
+    next(error);
   }
 });
 
@@ -48,10 +44,7 @@ router.get("/cohort/:cohortId", async (req, res, next) => {
     console.log(studentsInCohort);
     res.status(200).json(studentsInCohort);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Error in the backend. Please check the console." });
+    next(error);
   }
 });
 
@@ -70,9 +63,7 @@ router.post("/", async (req, res, next) => {
     projects: req.body.projects,
   })
     .then((createdStudent) => res.status(200).json(createdStudent))
-    .catch((err) =>
-      res.status(500).json({ message: "error creating a student" })
-    );
+    .catch((err) => next(err));
 });
 
 router.put("/:id", async (req, res, next) => {
@@ -89,8 +80,7 @@ router.put("/:id", async (req, res, next) => {
 
     res.status(200).json(updatedStudent);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error editing a student" });
+    next(error);
   }
 });
 
@@ -100,7 +90,7 @@ router.delete("/:id", (req, res, next) => {
       res.status(204).send();
     })
     .catch((error) => {
-      res.status((500).json({ message: "error deleting student" }));
+      next(error);
     });
 });
 module.exports = router;
